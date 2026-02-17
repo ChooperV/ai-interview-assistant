@@ -1,0 +1,18 @@
+diff --git a/node_modules/@ai-sdk/openai-compatible/dist/index.js b/node_modules/@ai-sdk/openai-compatible/dist/index.js
+--- a/node_modules/@ai-sdk/openai-compatible/dist/index.js
++++ b/node_modules/@ai-sdk/openai-compatible/dist/index.js
+@@ -940,7 +940,7 @@ var chunkBaseSchema = import_v43.z.looseObject({
+       delta: import_v43.z.object({
+-        role: import_v43.z.enum(["assistant"]).nullish(),
++        role: import_v43.z.union([import_v43.z.enum(["assistant"]), import_v43.z.literal("")]).nullish(),
+         content: import_v43.z.string().nullish(),
+         // Most openai-compatible models set `reasoning_content`, but some
+diff --git a/node_modules/@ai-sdk/openai-compatible/dist/index.mjs b/node_modules/@ai-sdk/openai-compatible/dist/index.mjs
+--- a/node_modules/@ai-sdk/openai-compatible/dist/index.mjs
++++ b/node_modules/@ai-sdk/openai-compatible/dist/index.mjs
+@@ -924,7 +924,7 @@ var chunkBaseSchema = z3.looseObject({
+       delta: z3.object({
+-        role: z3.enum(["assistant"]).nullish(),
++        role: z3.union([z3.enum(["assistant"]), z3.literal("")]).nullish(),
+         content: z3.string().nullish(),
+         // Most openai-compatible models set `reasoning_content`, but some

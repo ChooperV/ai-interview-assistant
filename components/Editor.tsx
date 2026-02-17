@@ -42,12 +42,16 @@ export interface EditorProps {
   placeholder?: string;
   disabled?: boolean;
   minHeight?: string;
+  /** 最大高度，超出时内部滚动，如 max-h-[120px] */
+  maxHeight?: string;
   /** 触发发送时调用，传入 editor 以便获取 getText() 或 getHTML() */
   onSubmit?: (editor: { getText: () => string; getHTML: () => string }) => void;
   submitKey?: "Enter" | "Mod-Enter";
   className?: string;
   /** 是否显示工具栏 */
   showToolbar?: boolean;
+  /** 文字大小，默认 prose-sm，可选 text-sm 等更小尺寸 */
+  textSizeClass?: string;
 }
 
 export function Editor({
@@ -56,10 +60,12 @@ export function Editor({
   placeholder = "请输入...",
   disabled = false,
   minHeight = "min-h-[120px]",
+  maxHeight,
   onSubmit,
   submitKey = "Mod-Enter",
   className,
   showToolbar = true,
+  textSizeClass = "prose prose-sm sm:prose lg:prose-lg",
 }: EditorProps) {
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
@@ -78,8 +84,11 @@ export function Editor({
     editorProps: {
       attributes: {
         class: cn(
-          "prose prose-sm sm:prose lg:prose-lg max-w-none focus:outline-none px-3 py-2",
-          minHeight
+          "prose max-w-none focus:outline-none px-3 py-2",
+          textSizeClass,
+          minHeight,
+          maxHeight,
+          maxHeight && "overflow-y-auto"
         ),
       },
       handleKeyDown: (_view, event) => {
@@ -128,6 +137,7 @@ export function Editor({
     <div
       className={cn(
         "rounded-md border border-input bg-background overflow-hidden",
+        maxHeight && "flex flex-col",
         disabled && "cursor-not-allowed opacity-50",
         className
       )}

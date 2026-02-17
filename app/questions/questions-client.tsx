@@ -35,6 +35,7 @@ import {
 import { AddQuestionDialog } from "./add-question-dialog";
 import { AIGenerateDialog } from "./ai-generate-dialog";
 import { QuestionCard } from "@/components/QuestionCard";
+import { getActiveSessionQuestionId } from "@/lib/interview-session";
 
 const CATEGORIES = ["HR", "技术", "产品思维", "其他"];
 
@@ -47,7 +48,12 @@ export function QuestionsClient() {
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
   const [bulkPending, setBulkPending] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
+  const [activeSessionQuestionId, setActiveSessionQuestionId] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    setActiveSessionQuestionId(getActiveSessionQuestionId());
+  }, []);
 
   async function refetchQuestions() {
     try {
@@ -175,6 +181,19 @@ export function QuestionsClient() {
           <AddQuestionDialog onSuccess={refetchQuestions} />
         </div>
       </div>
+
+      {activeSessionQuestionId && (
+        <div className="mb-4 rounded-lg border border-amber-500/50 bg-amber-500/10 px-4 py-3 flex items-center justify-between gap-4">
+          <span className="text-sm text-amber-800 dark:text-amber-200">
+            您有未完成的面试，可点击恢复继续
+          </span>
+          <Button size="sm" asChild>
+            <Link href={`/interview/${activeSessionQuestionId}`}>
+              恢复面试
+            </Link>
+          </Button>
+        </div>
+      )}
 
       {questions.length === 0 ? (
         <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">

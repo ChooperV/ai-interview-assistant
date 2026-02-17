@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -13,6 +13,7 @@ import { Editor } from "@/components/Editor";
 import { ArrowLeft, Pencil, Check, X } from "lucide-react";
 import type { Question } from "@/app/actions";
 import { updateQuestionContentAndAnswer } from "@/app/actions";
+import { hasInterviewSession } from "@/lib/interview-session";
 
 const CATEGORIES = ["HR", "技术", "产品思维", "其他"];
 
@@ -51,6 +52,11 @@ export function QuestionDetailClient({ question: initialQuestion }: QuestionDeta
   const [editCategory, setEditCategory] = useState(question.category);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [hasOngoingSession, setHasOngoingSession] = useState(false);
+
+  useEffect(() => {
+    setHasOngoingSession(hasInterviewSession(question.id));
+  }, [question.id]);
 
   function isEmptyHtml(html: string): boolean {
     if (!html?.trim()) return true;
@@ -122,7 +128,7 @@ export function QuestionDetailClient({ question: initialQuestion }: QuestionDeta
               <>
                 <Button size="sm" asChild>
                   <Link href={`/interview/${question.id}`}>
-                    开始模拟面试
+                    {hasOngoingSession ? "恢复面试" : "开始模拟面试"}
                   </Link>
                 </Button>
                 <Button variant="outline" size="sm" onClick={startEdit}>
